@@ -1,0 +1,11 @@
+[ui]
+username=name <email>
+[extensions]
+hgext.extdiff =
+hgext.churn =
+hgext.fetch =
+hgext.strip =
+hgext.purge =
+[extdiff]
+cmd.vdiff = /usr/bin/vimdiff
+cmd.meld =
