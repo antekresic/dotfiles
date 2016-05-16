@@ -45,12 +45,16 @@ vmap <Leader>w <ESC><ESC>:w<CR>
 " :W sudo saves the file
 " (useful for handling the permission-denied error)
 command W w !sudo tee % > /dev/null
+" :Q works like :q
+command Q q
 " Turn off syntax hightlighting
 syntax off
 " Popup color
 hi Pmenu ctermbg=Green
 hi PmenuSel ctermbg=DarkGreen ctermfg=White
 hi PmenuSbar ctermbg=Black ctermfg=White
+" Make backspace work like in most editors
+set backspace=indent,eol,start
 " Set tabstop to 4 spaces
 set tabstop=4
 set shiftwidth=4
@@ -72,6 +76,12 @@ hi CursorLine cterm=NONE ctermbg=236
 " Keep cursor in the middle of the vertically
 set so=999
 
+" Have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+    \| exe "normal! g'\"" | endif
+endif
 
 
 " via: http://rails-bestpractices.com/posts/60-remove-trailing-whitespace
@@ -87,16 +97,10 @@ function! <SID>StripTrailingWhitespaces()
     let @/=_s
     call cursor(l, c)
 endfunction
-autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+autocmd BufWritePre *.php :call <SID>StripTrailingWhitespaces()
 command! StripTrailingWhitespaces call <SID>StripTrailingWhitespaces()
-nmap ,w :StripTrailingWhitespaces<CR>
+autocmd FileType php nmap ,w :StripTrailingWhitespaces<CR>
 
-" Have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-    \| exe "normal! g'\"" | endif
-endif
 
 " ---------- Plugin settings ----------
 "
@@ -168,7 +172,7 @@ set completeopt-=preview
 " Vim-go
 "------------------------------------------------------------------------------
 let g:go_fmt_fail_silently = 1
-let g:go_fmt_command = "gofmt" "Explicited the formater plugin (gofmt, goimports, goreturn...)
+let g:go_fmt_command = "goimports" "Explicited the formater plugin (gofmt, goimports, goreturn...)
 
 " Show a list of interfaces which is implemented by the type under your cursor
 au FileType go nmap <Leader>s <Plug>(go-implements)
